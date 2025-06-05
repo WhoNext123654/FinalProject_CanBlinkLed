@@ -25,19 +25,7 @@
     #define LED1            1U
 #endif
 
-//#define MASTER
-//
-//#if defined(MASTER)
-//    #define TX_MAILBOX  (1UL) // MB1
-//    #define TX_MSG_ID   (1UL) // 0x01
-//    #define RX_MAILBOX  (0UL) // MB0
-//    #define RX_MSG_ID   (2UL) // 0x02
-//#elif defined(SLAVE)
-//    #define TX_MAILBOX  (0UL) // MB0
-//    #define TX_MSG_ID   (2UL) // 0x02
-//    #define RX_MAILBOX  (1UL) // MB1
-//    #define RX_MSG_ID   (1UL) // 0x01
-//#endif
+
 
 uint8_t buffer[4] = {0};
 uint8_t buffer_rx[4] = {0};
@@ -53,7 +41,7 @@ volatile uint8_t speed = 0;
 volatile uint32_t last_valid_press_time_for_sequence = 0;
 volatile uint32_t last_raw_interrupt_time = 0; // Cho việc chống nhiễu (debounce)
 
-// Hằng số (nên được định nghĩa toàn cục hoặc trong header)
+// Hằng số 
 #define MULTI_PRESS_TIMEOUT_MS  500U // 0.5 giây
 #define DEBOUNCE_PERIOD_MS      50U  // 50 mili giây
 
@@ -158,7 +146,7 @@ int main(void)
     {
     	if (g_send_flag && (g_millis > current_time + MULTI_PRESS_TIMEOUT_MS))
     	{
-    	    uint8_t tx_buf[4] = {0, 0, 0, g_speed_value_to_send};
+    	    uint8_t tx_buf[4] = {g_speed_value_to_send, 0, 0, 0};
     	    FLEXCAN0_transmit_msg(tx_buf);
     	    g_send_flag = false;
     	    speed = 0;
