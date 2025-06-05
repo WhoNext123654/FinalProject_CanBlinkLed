@@ -1,47 +1,11 @@
 #include "sdk_project_config.h"
-#include <interrupt_manager.h>
 #include <stdint.h>
 #include <stdbool.h>
 #include <FlexCan.h>
-#define EVB
 
-#ifdef EVB
-    #define LED_PORT        PORTD
-    #define GPIO_PORT       PTD
-    #define PCC_INDEX       PCC_PORTD_INDEX
-    #define LED0            15U
-    #define LED1            16U
-#else
-    #define LED_PORT        PORTC
-    #define GPIO_PORT       PTC
-    #define PCC_INDEX       PCC_PORTC_INDEX
-    #define LED0            0U
-    #define LED1            1U
-#endif
-
-#define MASTER
-
-#if defined(MASTER)
-    #define TX_MAILBOX  (1UL) // MB1
-    #define TX_MSG_ID   (1UL) // 0x01
-    #define RX_MAILBOX  (0UL) // MB0
-    #define RX_MSG_ID   (2UL) // 0x02
-#elif defined(SLAVE)
-    #define TX_MAILBOX  (0UL) // MB0
-    #define TX_MSG_ID   (2UL) // 0x02
-    #define RX_MAILBOX  (1UL) // MB1
-    #define RX_MSG_ID   (1UL) // 0x01
-#endif
-
-uint8_t buffer[4] = {0};
-uint8_t buffer_rx[4] = {0};
+uint8_t rx_buffer[4] = {0};
 uint32_t RxLENGTH = 0;
-typedef enum {
-    LED0_CHANGE_REQUESTED = 0x00U,
-    LED1_CHANGE_REQUESTED = 0x01U
-} can_commands_list;
-
-uint8_t ledRequested = LED0_CHANGE_REQUESTED;
+uint32_t duty_cycle = 0;
 
 void BoardInit(void)
 {
@@ -49,48 +13,42 @@ void BoardInit(void)
     PINS_DRV_Init(NUM_OF_CONFIGURED_PINS0, g_pin_mux_InitConfigArr0);
 }
 
-void GPIOInit(void)
-{
-    PINS_DRV_SetPinsDirection(GPIO_PORT, (1 << LED1) | (1 << LED0));
-    PINS_DRV_ClearPins(GPIO_PORT, (1 << LED1) | (1 << LED0));
-}
-
 volatile int exit_code = 0;
-//void CAN0_ORed_0_15_MB_IRQHandler(void)
-//{
-//    if (CAN0->IFLAG1 & (1 << RX_MAILBOX)) {
-//    	FLEXCAN0_receive_msg(buffer_rx);
-//		if (buffer_rx[0] == LED0_CHANGE_REQUESTED) {
-//			PINS_DRV_TogglePins(GPIO_PORT, (1 << LED0));
-//		}
-//		else if(buffer_rx[0] == LED0_CHANGE_REQUESTED){
-//			PINS_DRV_TogglePins(GPIO_PORT, (1 << LED1));
-//		}
-//	}
-//}
+void Update_PWM(uint8_t mode) {
+
+    switch (mode) {
+        case 1: duty_cycle = 2000; break;
+        case 2: duty_cycle = 3000; break;
+        case 3: duty_cycle = 4000; break;
+        default: duty_cycle = 0; break;
+    }
+}
 
 int main(void)
 {
-    /* Do the initializations required for this application */
     BoardInit();
-    GPIOInit();
-
     FLEXCAN0_init();
-    uint8_t rx_buffer[4] = {0};
+
+    uint8_t channel = pwm_pal_1_configs.pwmChannels[0].channel;
+    status_t status = STATUS_SUCCESS;
+    status = CLOCK_DRV_Init(&clockMan1_InitConfig0);
+    DEV_ASSERT(status == STATUS_SUCCESS);
+    status = PINS_DRV_Init(NUM_OF_CONFIGURED_PINS0, g_pin_mux_InitConfigArr0);
+    DEV_ASSERT(status == STATUS_SUCCESS);
+    status = PWM_Init(&pwm_pal_1_instance, &pwm_pal_1_configs);
+    DEV_ASSERT(status == STATUS_SUCCESS);
 
     while(1)
     {
-    	if (CAN0->IFLAG1 & (1 << RX_MAILBOX)) {
+        status = PWM_UpdateDuty(&pwm_pal_1_instance, channel, duty_cycle);
+        DEV_ASSERT(status == STATUS_SUCCESS);
+
+    	if (CAN0->IFLAG1 & (1UL << RX_MAILBOX)) {
 			RxLENGTH = FLEXCAN0_receive_msg(rx_buffer);
 			if (RxLENGTH != 0){
-				if (rx_buffer[0] == LED0_CHANGE_REQUESTED) {
-					PINS_DRV_TogglePins(GPIO_PORT, (1 << LED0));
-				}
-				else if(rx_buffer[0] == LED0_CHANGE_REQUESTED){
-					PINS_DRV_TogglePins(GPIO_PORT, (1 << LED1));
-				}
+				FLEXCAN0_transmit_msg(rx_buffer);
+				Update_PWM(rx_buffer[0]);
 			}
-
 		}
     }
 

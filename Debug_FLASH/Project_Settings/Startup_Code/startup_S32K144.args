@@ -1,4 +1,7 @@
 -c
+-I../SDK/rtos/osif
+-I../SDK/platform/drivers/inc
+-I../SDK/platform/pal/inc
 -I"C:/Users/Admin/workspaceS32DS.3.5/can_pal_s32k144_EX/src"
 -I"C:/Users/Admin/workspaceS32DS.3.5/can_pal_s32k144_EX/board"
 -I"C:/NXP/S32DS.3.5/S32DS/software/S32SDK_S32K1XX_RTM_4.0.1/platform/devices/S32K144/include"
@@ -9,7 +12,6 @@
 -I"C:/NXP/S32DS.3.5/S32DS/software/S32SDK_S32K1XX_RTM_4.0.1/platform/drivers/inc"
 -I"C:/NXP/S32DS.3.5/S32DS/software/S32SDK_S32K1XX_RTM_4.0.1/platform/drivers/src/clock/S32K1xx"
 -I"C:/NXP/S32DS.3.5/S32DS/software/S32SDK_S32K1XX_RTM_4.0.1/platform/pal/inc"
--I"C:/NXP/S32DS.3.5/S32DS/software/S32SDK_S32K1XX_RTM_4.0.1/platform/drivers/inc"
 -I"C:/NXP/S32DS.3.5/S32DS/software/S32SDK_S32K1XX_RTM_4.0.1/rtos/osif"
 -x assembler-with-cpp
 -DSTART_FROM_FLASH

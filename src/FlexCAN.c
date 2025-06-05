@@ -1,102 +1,83 @@
-#include "S32K144.h"  // Thu vien dinh nghia cac thanh ghi
+#include "S32K144.h"
+#include <FlexCan.h>
 
-#define MSG_BUF_SIZE  4  // So tu trong 1 bo dem tin nhan (2 tu header + 2 tu du lieu)
-
+/**
+ * Initialize the FLEXCAN0 module for 500 kbps communication.
+ */
 void FLEXCAN0_init(void) {
-    uint32_t i = 0;
 
-    // Bat clock cho module FlexCAN0
     PCC->PCCn[PCC_FlexCAN0_INDEX] |= PCC_PCCn_CGC_MASK;
 
-    // Vo hieu hoa module truoc khi cau hinh
     CAN0->MCR |= CAN_MCR_MDIS_MASK;
-
-    // Chon nguon clock 8 MHz tu oscillator
     CAN0->CTRL1 &= ~CAN_CTRL1_CLKSRC_MASK;
+    CAN0->MCR |= (CAN_MCR_FRZ_MASK | CAN_MCR_HALT_MASK);
 
-    // Kich hoat module tro lai (vao che do freeze de cau hinh)
     CAN0->MCR &= ~CAN_MCR_MDIS_MASK;
     while (!((CAN0->MCR & CAN_MCR_FRZACK_MASK) >> CAN_MCR_FRZACK_SHIFT)) {}
 
-    // Cau hinh toc do CAN 500 kHz (tham so CAN0->CTRL1)
-    CAN0->CTRL1 = 0x00DB0006;
+    CAN0->CTRL1 = 0x00DB0006;  // Set CAN baud rate to 500 kbps (based on 8 MHz clock)
 
-    // Xoa toan bo bo dem tin nhan (128 words tuong ung 32 buffer * 4 words)
-    for (i = 0; i < 128; i++) {
-        CAN0->RAMn[i] = 0;
-    }
+    uint32_t i = 0;
+    for (i = 0; i < 128; i++) CAN0->RAMn[i] = 0;
 
-    // Cau hinh bo loc, cho phep nhan tat ca ID
-    for (i = 0; i < 16; i++) {
-        CAN0->RXIMR[i] = 0xFFFFFFFF;
-    }
+    for (i = 0; i < 16; i++)  CAN0->RXIMR[i] = 0xFFFFFFFF;
 
     CAN0->RXMGMASK = 0x1FFFFFFF;
+    CAN0->RAMn[RX_MAILBOX * MSG_BUF_SIZE + 1] = RX_MSG_ID << 18;
+    CAN0->RAMn[RX_MAILBOX * MSG_BUF_SIZE + 0] = 0x04000000; // CODE=4 (RX inactive)
 
-    // Cau hinh bo dem 4 nhan tin nhan voi ID chuan, chua kich hoat (CODE=4)
-#ifdef NODE_A
-    CAN0->RAMn[4*MSG_BUF_SIZE + 1] = 0x14440000; // ID = 0x111 (vi du)
-#else
-    CAN0->RAMn[4*MSG_BUF_SIZE + 1] = 0x15540000; // ID = 0x555 (vi du)
-#endif
-    CAN0->RAMn[4*MSG_BUF_SIZE + 0] = 0x04000000; // CODE=4 (RX inactive)
-
-    // Kich hoat module CAN, thoat freeze mode
-    CAN0->MCR = 0x0000001F;
+    CAN0->MCR &= ~(CAN_MCR_FRZ_MASK | CAN_MCR_HALT_MASK);
     while ((CAN0->MCR & CAN_MCR_FRZACK_MASK) >> CAN_MCR_FRZACK_SHIFT) {}
     while ((CAN0->MCR & CAN_MCR_NOTRDY_MASK) >> CAN_MCR_NOTRDY_SHIFT) {}
 }
 
-void FLEXCAN0_transmit_msg(uint8_t buffer[]) {
-    // Xoa co cu cua bo dem 0
-    CAN0->IFLAG1 = 0x00000001;
+/*
+ * Transmit a 4-byte CAN message using FLEXCAN0 TX MailBox.
+ *
+ * @param buffer Pointer to 4-byte array containing the message data.
+ */
+void FLEXCAN0_transmit_msg(uint8_t *buffer) {
 
-#ifdef NODE_A
-    // Cau hinh ID chuan cho bo dem 0
-    CAN0->RAMn[0*MSG_BUF_SIZE + 1] = (0x01 << 18); // ID 0x01
-#else
-    CAN0->RAMn[0*MSG_BUF_SIZE + 1] = (0x02 << 18); // ID 0x02
-#endif
+    CAN0->IFLAG1 = (1UL << TX_MAILBOX);
+    CAN0->RAMn[TX_MAILBOX * MSG_BUF_SIZE + 1] = (TX_MSG_ID << 18);
 
-    // Cau hinh bo dem 0 kich hoat truyen voi DLC=8 bytes, CODE=0xC (TX frame)
-    CAN0->RAMn[0*MSG_BUF_SIZE + 0] = 0x0C400000 | (8 << CAN_WMBn_CS_DLC_SHIFT);
+    CAN0->RAMn[TX_MAILBOX * MSG_BUF_SIZE + 0] = 0x0C400000 |
+    		(DLC << CAN_WMBn_CS_DLC_SHIFT);
 
-    // Gan du lieu gui vao RAM bo dem (gop 4 bytes dau thanh 1 word)
     uint32_t dataWord = 0;
     dataWord |= buffer[0];
     dataWord |= ((uint32_t)buffer[1] << 8);
     dataWord |= ((uint32_t)buffer[2] << 16);
     dataWord |= ((uint32_t)buffer[3] << 24);
 
-    CAN0->RAMn[2] = dataWord;  // Ghi du lieu vao word 2 cua MB0 (doan du lieu)
+    CAN0->RAMn[TX_MAILBOX * MSG_BUF_SIZE+2] = dataWord;
 }
 
-
+/**
+ * Receive a CAN message from FLEXCAN0 MailBox and store it in a buffer.
+ *
+ * @param buffer_rx Pointer to a buffer to store received data
+ * @return uint32_t Number of bytes received (0 if no valid message).
+ */
 uint32_t FLEXCAN0_receive_msg(uint8_t *buffer_rx) {
-//    if (buffer_rx == NULL) {
-//        return 0;  // Kiểm tra con trỏ đầu vào
-//    }
 
-    /* Đọc thông tin từ MB4 */
-    uint32_t RxCODE = (CAN0->RAMn[4 * 4 + 0] & 0x07000000) >> 24;  /* CODE field */
-    if (RxCODE != 0x2) { // MB trong
-        return 0;  // Kiểm tra mã trạng thái
+    uint32_t RxCODE = (CAN0->RAMn[RX_MAILBOX * MSG_BUF_SIZE + 0] & 0x07000000) >> 24;
+
+    if (RxCODE != 0x2) {
+        return 0;
     }
-    // RxID = (CAN0->RAMn[4 * 4 + 1] & CAN_WMBn_ID_ID_MASK) >> CAN_WMBn_ID_ID_SHIFT; do ham ngat da ktra ID roi
-    uint32_t RxLENGTH = (CAN0->RAMn[4 * 4 + 0] & CAN_WMBn_CS_DLC_MASK) >> CAN_WMBn_CS_DLC_SHIFT;
-    uint32_t RxDATA = CAN0->RAMn[4 * 4 + 2];  /* Đọc 4 byte dữ liệu từ word 2 */
-    for (uint32_t i = 0; i < RxLENGTH && i < 4; i++) {
-            buffer_rx[i] = (RxDATA >> (i * 8)) & 0xFF; // Lưu trực tiếp vào buffer
+    uint32_t RxLENGTH = (CAN0->RAMn[RX_MAILBOX * MSG_BUF_SIZE + 0] &
+    		CAN_WMBn_CS_DLC_MASK) >> CAN_WMBn_CS_DLC_SHIFT;
+    uint32_t RxDATA = CAN0->RAMn[RX_MAILBOX * MSG_BUF_SIZE + 2];
+
+    for (uint32_t i = 0; i < RxLENGTH && i < DLC; i++) {
+            buffer_rx[i] = (RxDATA >> (i * 8)) & 0xFF;
         }
-    for (uint32_t i = RxLENGTH; i < 4; i++) {
-        buffer_rx[i] = 0; // Xóa byte không hợp lệ
+    for (uint32_t i = RxLENGTH; i < DLC; i++) {
+        buffer_rx[i] = 0;
     }
 
-    /* Đọc TIMESTAMP từ MB4 (sửa lỗi từ MB0) */
-    uint32_t RxTIMESTAMP = (CAN0->RAMn[4 * 4 + 0] & 0x0000FFFF);
-
-    /* Mở khóa MB và xóa cờ ngắt */
-    (void)CAN0->TIMER;           /* Mở khóa MB */
-    CAN0->IFLAG1 = 0x00000010;     /* Xóa cờ MB4 */
+    (void)CAN0->TIMER;
+    CAN0->IFLAG1 = (1UL << RX_MAILBOX);
     return RxLENGTH;
 }

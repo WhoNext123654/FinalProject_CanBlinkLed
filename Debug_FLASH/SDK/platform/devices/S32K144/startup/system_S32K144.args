@@ -1,6 +1,12 @@
 -std=c99
 -DCPU_S32K144HFT0VLLT
 -DDEV_ERROR_DETECT
+-I../SDK/rtos/osif
+-I../SDK/platform/drivers/inc
+-I../SDK/platform/pal/inc
+-I"C:/Users/Admin/workspaceS32DS.3.5/can_pal_s32k144_EX/SDK/platform/drivers/src/ftm"
+-I"C:/Users/Admin/workspaceS32DS.3.5/can_pal_s32k144_EX/SDK/platform/pal/src/pwm"
+-I"C:/Users/Admin/workspaceS32DS.3.5/can_pal_s32k144_EX/SDK"
 -I"C:/Users/Admin/workspaceS32DS.3.5/can_pal_s32k144_EX/SDK/platform/devices"
 -I"C:/Users/Admin/workspaceS32DS.3.5/can_pal_s32k144_EX/SDK/platform/devices/common"
 -I"C:/Users/Admin/workspaceS32DS.3.5/can_pal_s32k144_EX/SDK/platform/devices/S32K144/include"

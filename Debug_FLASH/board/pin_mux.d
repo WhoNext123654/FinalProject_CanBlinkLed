@@ -1,5 +1,5 @@
 board/pin_mux.o: ../board/pin_mux.c ../board/pin_mux.h \
- C:/Users/Admin/workspaceS32DS.3.5/can_pal_s32k144_EX/SDK/platform/drivers/inc/pins_driver.h \
+ ../SDK/platform/drivers/inc/pins_driver.h \
  C:/Users/Admin/workspaceS32DS.3.5/can_pal_s32k144_EX/SDK/platform/devices/device_registers.h \
  C:/Users/Admin/workspaceS32DS.3.5/can_pal_s32k144_EX/SDK/platform/devices/common/s32_core_cm4.h \
  C:/Users/Admin/workspaceS32DS.3.5/can_pal_s32k144_EX/SDK/platform/devices/S32K144/include/S32K144.h \
@@ -9,7 +9,7 @@ board/pin_mux.o: ../board/pin_mux.c ../board/pin_mux.h \
 
 ../board/pin_mux.h:
 
-C:/Users/Admin/workspaceS32DS.3.5/can_pal_s32k144_EX/SDK/platform/drivers/inc/pins_driver.h:
+../SDK/platform/drivers/inc/pins_driver.h:
 
 C:/Users/Admin/workspaceS32DS.3.5/can_pal_s32k144_EX/SDK/platform/devices/device_registers.h:
 

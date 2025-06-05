@@ -6,7 +6,7 @@ SDK/platform/drivers/src/pins/pins_driver.o: \
  C:/Users/Admin/workspaceS32DS.3.5/can_pal_s32k144_EX/SDK/platform/devices/S32K144/include/S32K144_features.h \
  C:/Users/Admin/workspaceS32DS.3.5/can_pal_s32k144_EX/SDK/platform/devices/devassert.h \
  ../SDK/platform/drivers/src/pins/pins_gpio_hw_access.h \
- C:/Users/Admin/workspaceS32DS.3.5/can_pal_s32k144_EX/SDK/platform/drivers/inc/pins_driver.h \
+ ../SDK/platform/drivers/inc/pins_driver.h \
  C:/Users/Admin/workspaceS32DS.3.5/can_pal_s32k144_EX/SDK/platform/devices/status.h \
  ../SDK/platform/drivers/src/pins/pins_port_hw_access.h
 
@@ -22,7 +22,7 @@ C:/Users/Admin/workspaceS32DS.3.5/can_pal_s32k144_EX/SDK/platform/devices/devass
 
 ../SDK/platform/drivers/src/pins/pins_gpio_hw_access.h:
 
-C:/Users/Admin/workspaceS32DS.3.5/can_pal_s32k144_EX/SDK/platform/drivers/inc/pins_driver.h:
+../SDK/platform/drivers/inc/pins_driver.h:
 
 C:/Users/Admin/workspaceS32DS.3.5/can_pal_s32k144_EX/SDK/platform/devices/status.h:
 

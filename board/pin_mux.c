@@ -2,7 +2,7 @@
 /*
  * TEXT BELOW IS USED AS SETTING FOR TOOLS *************************************
 !!GlobalInfo
-product: Pins v7.0
+product: Pins v15.0
 processor: S32K144
 package_id: S32K144_LQFP100
 mcu_data: s32sdk_s32k1xx_rtm_401
@@ -47,18 +47,17 @@ BOARD_InitPins:
 - pin_list:
   - {pin_num: '9', peripheral: CAN0, signal: 'rxd, rxd', pin_signal: PTE4}
   - {pin_num: '8', peripheral: CAN0, signal: 'txd, txd', pin_signal: PTE5}
-  - {pin_num: '22', peripheral: PORTD, signal: 'port, 15', pin_signal: PTD15, direction: OUTPUT}
-  - {pin_num: '21', peripheral: PORTD, signal: 'port, 16', pin_signal: PTD16, direction: OUTPUT}
   - {pin_num: '40', peripheral: PORTC, signal: 'port, 0', pin_signal: PTC0, direction: OUTPUT}
   - {pin_num: '39', peripheral: PORTC, signal: 'port, 1', pin_signal: PTC1, direction: OUTPUT}
   - {pin_num: '50', peripheral: PORTC, signal: 'port, 12', pin_signal: PTC12, direction: INPUT}
   - {pin_num: '49', peripheral: PORTC, signal: 'port, 13', pin_signal: PTC13, direction: INPUT}
+  - {pin_num: '21', peripheral: FTM0, signal: 'ch, 1', pin_signal: PTD16, direction: OUTPUT}
  * BE CAREFUL MODIFYING THIS COMMENT - IT IS YAML SETTINGS FOR TOOLS ***********
  */
 /* clang-format on */
 
-  /* Generate array of configured pin structures */
-  pin_settings_config_t g_pin_mux_InitConfigArr0[NUM_OF_CONFIGURED_PINS0] = {
+/* Generate array of configured pin structures */
+pin_settings_config_t g_pin_mux_InitConfigArr0[NUM_OF_CONFIGURED_PINS0] = {
     {
         .base            = PORTC,
         .pinPortIdx      = 0U,
@@ -121,33 +120,16 @@ BOARD_InitPins:
     },
     {
         .base            = PORTD,
-        .pinPortIdx      = 15U,
-        .pullConfig      = PORT_INTERNAL_PULL_NOT_ENABLED,
-        .driveSelect     = PORT_LOW_DRIVE_STRENGTH,
-        .passiveFilter   = false,
-        .mux             = PORT_MUX_AS_GPIO,
-        .pinLock         = false,
-        .intConfig       = PORT_DMA_INT_DISABLED,
-        .clearIntFlag    = false,
-        .gpioBase        = PTD,
-        .direction       = GPIO_OUTPUT_DIRECTION,
-        .digitalFilter   = false,
-        .initValue       = 0U,
-    },
-    {
-        .base            = PORTD,
         .pinPortIdx      = 16U,
         .pullConfig      = PORT_INTERNAL_PULL_NOT_ENABLED,
         .driveSelect     = PORT_LOW_DRIVE_STRENGTH,
         .passiveFilter   = false,
-        .mux             = PORT_MUX_AS_GPIO,
+        .mux             = PORT_MUX_ALT2,
         .pinLock         = false,
         .intConfig       = PORT_DMA_INT_DISABLED,
         .clearIntFlag    = false,
-        .gpioBase        = PTD,
-        .direction       = GPIO_OUTPUT_DIRECTION,
+        .gpioBase        = NULL,
         .digitalFilter   = false,
-        .initValue       = 0U,
     },
     {
         .base            = PORTE,
@@ -175,7 +157,7 @@ BOARD_InitPins:
         .gpioBase        = NULL,
         .digitalFilter   = false,
     },
-  };
+};
 /***********************************************************************************************************************
  * EOF
  **********************************************************************************************************************/

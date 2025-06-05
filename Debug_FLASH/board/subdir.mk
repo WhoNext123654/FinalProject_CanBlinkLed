@@ -7,18 +7,21 @@ C_SRCS += \
 ../board/clock_config.c \
 ../board/peripherals_can_pal1.c \
 ../board/peripherals_osif1.c \
+../board/peripherals_pwm_pal_1.c \
 ../board/pin_mux.c 
 
 OBJS += \
 ./board/clock_config.o \
 ./board/peripherals_can_pal1.o \
 ./board/peripherals_osif1.o \
+./board/peripherals_pwm_pal_1.o \
 ./board/pin_mux.o 
 
 C_DEPS += \
 ./board/clock_config.d \
 ./board/peripherals_can_pal1.d \
 ./board/peripherals_osif1.d \
+./board/peripherals_pwm_pal_1.d \
 ./board/pin_mux.d 
 
 

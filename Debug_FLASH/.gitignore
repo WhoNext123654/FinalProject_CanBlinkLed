@@ -1,0 +1,8 @@
+/SDK/
+/board/
+/src/
+/Project_Settings/
+/can_pal_s32k144_EX.args
+/makefile
+/objects.mk
+/sources.mk

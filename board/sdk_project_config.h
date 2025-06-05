@@ -20,7 +20,7 @@
 #include "pin_mux.h"
 #include "peripherals_can_pal1.h"
 #include "peripherals_osif1.h"
-
+#include "peripherals_pwm_pal_1.h"
 
 #endif /* SDK_PROJECT_CONFIG_H_ */
 

@@ -10,10 +10,10 @@ SDK/platform/drivers/src/clock/S32K1xx/clock_S32K1xx.o: \
  ../SDK/platform/drivers/src/clock/S32K1xx/pcc_hw_access.h \
  ../SDK/platform/drivers/src/clock/S32K1xx/pmc_hw_access.h \
  ../SDK/platform/drivers/src/clock/S32K1xx/smc_hw_access.h \
- C:/Users/Admin/workspaceS32DS.3.5/can_pal_s32k144_EX/SDK/platform/drivers/inc/clock.h \
+ ../SDK/platform/drivers/inc/clock.h \
  C:/Users/Admin/workspaceS32DS.3.5/can_pal_s32k144_EX/SDK/platform/devices/status.h \
- c:\users\admin\workspaces32ds.3.5\can_pal_s32k144_ex\sdk\platform\drivers\src\clock\s32k1xx\clock_s32k1xx.h \
- C:/Users/Admin/workspaceS32DS.3.5/can_pal_s32k144_EX/SDK/platform/drivers/inc/interrupt_manager.h
+ ../SDK/platform/drivers/inc/../src/clock/S32K1xx/clock_S32K1xx.h \
+ ../SDK/platform/drivers/inc/interrupt_manager.h
 
 C:/Users/Admin/workspaceS32DS.3.5/can_pal_s32k144_EX/SDK/platform/devices/device_registers.h:
 
@@ -35,10 +35,10 @@ C:/Users/Admin/workspaceS32DS.3.5/can_pal_s32k144_EX/SDK/platform/devices/devass
 
 ../SDK/platform/drivers/src/clock/S32K1xx/smc_hw_access.h:
 
-C:/Users/Admin/workspaceS32DS.3.5/can_pal_s32k144_EX/SDK/platform/drivers/inc/clock.h:
+../SDK/platform/drivers/inc/clock.h:
 
 C:/Users/Admin/workspaceS32DS.3.5/can_pal_s32k144_EX/SDK/platform/devices/status.h:
 
-c:\users\admin\workspaces32ds.3.5\can_pal_s32k144_ex\sdk\platform\drivers\src\clock\s32k1xx\clock_s32k1xx.h:
+../SDK/platform/drivers/inc/../src/clock/S32K1xx/clock_S32K1xx.h:
 
-C:/Users/Admin/workspaceS32DS.3.5/can_pal_s32k144_EX/SDK/platform/drivers/inc/interrupt_manager.h:
+../SDK/platform/drivers/inc/interrupt_manager.h:

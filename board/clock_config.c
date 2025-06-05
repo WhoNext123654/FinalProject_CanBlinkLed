@@ -12,7 +12,7 @@
 
 /* TEXT BELOW IS USED AS SETTING FOR TOOLS *************************************
 !!GlobalInfo
-product: Clocks v7.0
+product: Clocks v13.0
 processor: S32K144
 package_id: S32K144_LQFP100
 mcu_data: s32sdk_s32k1xx_rtm_401
@@ -82,7 +82,6 @@ outputs:
 - {id: PORTC_CLK.outFreq, value: 48 MHz}
 - {id: PORTD_CLK.outFreq, value: 48 MHz}
 - {id: PORTE_CLK.outFreq, value: 48 MHz}
-- {id: PREDIV_SYS_CLK.outFreq, value: 48 MHz}
 - {id: RTC0_CLK.outFreq, value: 48 MHz}
 - {id: RTC_CLK.outFreq, value: 8 MHz}
 - {id: SCGCLKOUT.outFreq, value: 48 MHz}
@@ -101,19 +100,6 @@ settings:
 - {id: 'HSRUN:SCG.DIVCORE.scale', value: '1', locked: true}
 - {id: 'HSRUN:SCG.DIVSLOW.scale', value: '4', locked: true}
 - {id: 'HSRUN:SCG.SCSSEL.sel', value: SCG.SPLL_CLK}
-- {id: PCC.ADC0_CLK_SEL.sel, value: SCG.SIRCDIV2_CLK}
-- {id: PCC.ADC1_CLK_SEL.sel, value: SCG.SIRCDIV2_CLK}
-- {id: PCC.FTM0_CLK_SEL.sel, value: SCG.SIRCDIV1_CLK}
-- {id: PCC.FTM1_CLK_SEL.sel, value: SCG.SIRCDIV1_CLK}
-- {id: PCC.FTM2_CLK_SEL.sel, value: SCG.SIRCDIV1_CLK}
-- {id: PCC.FTM3_CLK_SEL.sel, value: SCG.SIRCDIV1_CLK}
-- {id: PCC.FlexIO0_CLK_SEL.sel, value: SCG.SIRCDIV2_CLK}
-- {id: PCC.LPI2C0_CLK_SEL.sel, value: SCG.SIRCDIV2_CLK}
-- {id: PCC.LPIT0_CLK_SEL.sel, value: SCG.SIRCDIV2_CLK}
-- {id: PCC.LPSPI0_CLK_SEL.sel, value: SCG.SIRCDIV2_CLK}
-- {id: PCC.LPSPI1_CLK_SEL.sel, value: SCG.SIRCDIV2_CLK}
-- {id: PCC.LPSPI2_CLK_SEL.sel, value: SCG.SIRCDIV2_CLK}
-- {id: PCC.LPTMR0_CLK_SEL.sel, value: SCG.SIRCDIV2_CLK}
 - {id: PCC.LPTMR0_FRAC.scale, value: '1', locked: true}
 - {id: PCC.LPUART0_CLK_SEL.sel, value: SCG.SOSCDIV2_CLK}
 - {id: PCC.LPUART1_CLK_SEL.sel, value: SCG.SOSCDIV2_CLK}
@@ -411,7 +397,7 @@ clock_manager_user_config_t clockMan1_InitConfig0 = {
             .initialize = true,
             .freq = 8000000U,                     /* System Oscillator frequency: 8000000Hz */
             .monitorMode = SCG_SOSC_MONITOR_DISABLE,/* Monitor disabled */
-            .locked = false,                      /* Slow IRC disabled */
+            .locked = false,                      /* SOSC disabled */
             .extRef = SCG_SOSC_REF_OSC,           /* Internal oscillator of OSC requested. */
             .gain = SCG_SOSC_GAIN_LOW,            /* Configure crystal oscillator for low-gain operation */
             .range = SCG_SOSC_RANGE_HIGH,         /* High frequency range selected for the crystal oscillator of 8 MHz to 40 MHz. */
@@ -469,10 +455,10 @@ clock_manager_user_config_t clockMan1_InitConfig0 = {
     {
         .clockOutConfig =
         {
-           .initialize = true, /*!< Initialize    */
+            .initialize = true, /*!< Initialize    */
             .enable = true,                       /* enabled */
             .source = SIM_CLKOUT_SEL_SYSTEM_SCG_CLKOUT,/* SCG CLKOUT clock select: SCG slow clock */
-            .divider = SIM_CLKOUT_DIV_BY_1, /* Divided by 1 */
+            .divider = SIM_CLKOUT_DIV_BY_1,       /* Divided by 1 */
         },
         .lpoClockConfig =
         {

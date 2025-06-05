@@ -11,9 +11,11 @@ RM := rm -rf
 -include src/subdir.mk
 -include board/subdir.mk
 -include SDK/rtos/osif/subdir.mk
+-include SDK/platform/pal/src/pwm/subdir.mk
 -include SDK/platform/pal/src/can/subdir.mk
 -include SDK/platform/drivers/src/pins/subdir.mk
 -include SDK/platform/drivers/src/interrupt/subdir.mk
+-include SDK/platform/drivers/src/ftm/subdir.mk
 -include SDK/platform/drivers/src/flexcan/subdir.mk
 -include SDK/platform/drivers/src/edma/subdir.mk
 -include SDK/platform/drivers/src/clock/S32K1xx/subdir.mk
