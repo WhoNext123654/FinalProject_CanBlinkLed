@@ -91,7 +91,7 @@ void buttonISR(void)
             speed++;
             PINS_DRV_TogglePins(GPIO_PORT, (1 << LED1));
             if (speed > 3) {
-            	speed = 3;
+            	speed = 0;
             }
         }
         last_valid_press_time_for_sequence = current_time; // Cập nhật thời gian cho lần nhấn này
