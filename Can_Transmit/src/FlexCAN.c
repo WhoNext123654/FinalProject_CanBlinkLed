@@ -3,53 +3,40 @@
 
 void FLEXCAN0_init(void) {
     uint32_t i = 0;
-
     // Bat clock cho module FlexCAN0
     PCC->PCCn[PCC_FlexCAN0_INDEX] |= PCC_PCCn_CGC_MASK;
     // bit 30{Clock gate control} = 1 enable clock cho FlexCAN0
     // Vo hieu hoa module truoc khi cau hinh
-
     CAN0->MCR |= CAN_MCR_MDIS_MASK;
     // CAN0->MCR |= 1UL << CAN_MCR_MDIS_SHIFT; // Hoac co the viet nhu the nay 1UL << 31
     // Chon nguon clock 8 MHz tu oscillator
      CAN0->CTRL1 &= ~CAN_CTRL1_CLKSRC_MASK;
     // CAN0->CTRL1 &= ~(1UL << 16)
-
     CAN0->MCR |= (CAN_MCR_FRZ_MASK | CAN_MCR_HALT_MASK);
-
-
     // Kich hoat module tro lai (vao che do freeze de cau hinh)
     CAN0->MCR &= ~CAN_MCR_MDIS_MASK;
     while (!((CAN0->MCR & CAN_MCR_FRZACK_MASK) >> CAN_MCR_FRZACK_SHIFT)) {}
     // FRZACK = 1, cho phep cau hinh module CAN vao che do freeze(xac nhan FRZACK = 1)
-
     // Cau hinh toc do CAN 500 kHz (tham so CAN0->CTRL1)
     CAN0->CTRL1 = 0x00DB0006;
-
     // Xoa toan bo bo dem tin nhan (128 words tuong ung 32 buffer * 4 words)
     for (i = 0; i < 128; i++) {
         CAN0->RAMn[i] = 0;
     }
-
     // Cau hinh bo loc, cho phep nhan tat ca ID tu mbf0-15
     for (i = 0; i < 16; i++) {
         CAN0->RXIMR[i] = 0xFFFFFFFF;
     }
     // khai bao toan cuc cho phep nhan tat ca cac ID(29bit)
     CAN0->RXMGMASK = 0x1FFFFFFF;
-
     // Cau hinh bo dem 4 nhan tin nhan voi ID chuan, chua kich hoat (CODE=4)
     CAN0->RAMn[4*MSG_BUF_SIZE + 1] = 2UL << 18; //ID_receive = 2
     // id[28-18] = 10100010001 = 1297 = 0x111 (hex)
-
     CAN0->RAMn[4*MSG_BUF_SIZE + 0] = 0x04000000; // CODE=4 (RX inactive)
-
     // Kich hoat module CAN, thoat freeze mode
     CAN0->MCR &= ~(CAN_MCR_FRZ_MASK | CAN_MCR_HALT_MASK);
     // => Xóa FRZ=0, HALT=0: Cho phép CAN hoạt động bình thường
     //CAN0->MCR = 0x0000001F;
-
-
     while ((CAN0->MCR & CAN_MCR_FRZACK_MASK) >> CAN_MCR_FRZACK_SHIFT) {}
     // => Đợi FRZACK=0: Xác nhận module CAN đã thoát chế độ freeze
     while ((CAN0->MCR & CAN_MCR_NOTRDY_MASK) >> CAN_MCR_NOTRDY_SHIFT) {}
