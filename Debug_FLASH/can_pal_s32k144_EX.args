@@ -36,3 +36,4 @@
 "./board/pin_mux.o"
 "./src/FlexCAN.o"
 "./src/main.o"
+"./src/pwm.o"

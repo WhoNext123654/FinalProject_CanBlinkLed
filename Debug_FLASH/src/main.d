@@ -27,7 +27,9 @@ src/main.o: ../src/main.c \
  ../SDK/platform/drivers/inc/ftm_common.h \
  ../SDK/platform/drivers/inc/ftm_common.h \
  ../SDK/platform/pal/inc/pwm_pal_mapping.h \
- C:/Users/Admin/workspaceS32DS.3.5/can_pal_s32k144_EX/src/FlexCan.h
+ ../SDK/platform/drivers/inc/interrupt_manager.h \
+ C:/Users/Admin/workspaceS32DS.3.5/can_pal_s32k144_EX/src/FlexCan.h \
+ C:/Users/Admin/workspaceS32DS.3.5/can_pal_s32k144_EX/src/pwm.h
 
 C:/Users/Admin/workspaceS32DS.3.5/can_pal_s32k144_EX/board/sdk_project_config.h:
 
@@ -87,4 +89,8 @@ C:/Users/Admin/workspaceS32DS.3.5/can_pal_s32k144_EX/board/pwm_pal_cfg.h:
 
 ../SDK/platform/pal/inc/pwm_pal_mapping.h:
 
+../SDK/platform/drivers/inc/interrupt_manager.h:
+
 C:/Users/Admin/workspaceS32DS.3.5/can_pal_s32k144_EX/src/FlexCan.h:
+
+C:/Users/Admin/workspaceS32DS.3.5/can_pal_s32k144_EX/src/pwm.h:
